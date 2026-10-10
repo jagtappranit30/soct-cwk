@@ -1,0 +1,67 @@
+# =====================================================================
+# nottsEvents — Docker Compose
+#
+# Services:
+#   backend   — Spring Boot REST API (port 8080)
+#   frontend  — Nginx serving HTML/CSS/JS (port 80)
+#
+# MongoDB is hosted on Atlas (cloud) — no local DB container needed.
+# =====================================================================
+
+services:
+
+  # ------------------------------------------------------------------
+  # BACKEND — Spring Boot
+  # ------------------------------------------------------------------
+  backend:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: notts-events-api
+    ports:
+      - "8081:8080"     # Expose backend on 8081 to free up 8080
+    restart: unless-stopped
+    environment:
+      # Override application.properties values at runtime if needed.
+      # The default values in application.properties are used otherwise.
+      - SPRING_DATA_MONGODB_URI=${SPRING_DATA_MONGODB_URI}
+      - SKIDDLE_API_KEY=${SKIDDLE_API_KEY}
+      - WEATHER_API_KEY=${WEATHER_API_KEY}
+      - GEONAMES_USERNAME=${GEONAMES_USERNAME}
+    networks:
+      - app-network
+    healthcheck:
+      test: ["CMD", "wget", "--no-verbose", "--tries=1", "--spider", "http://localhost:8080/api/events"]
+      interval: 30s
+      timeout: 10s
+      retries: 5
+      start_period: 40s
+
+  # ------------------------------------------------------------------
+  # FRONTEND — Nginx
+  # ------------------------------------------------------------------
+  frontend:
+    image: nginx:1.25-alpine
+    container_name: notts-events-ui
+    ports:
+      - "8080:8080"     # Access the app at http://localhost:8080
+    volumes:
+      # Mount the frontend files into Nginx's web root
+      - ./frontend:/usr/share/nginx/html:ro
+      # Mount our custom Nginx config
+      - ./nginx.conf:/etc/nginx/conf.d/default.conf:ro
+    depends_on:
+      - backend
+    restart: unless-stopped
+    networks:
+      - app-network
+
+  # ------------------------------------------------------------------
+
+
+# ------------------------------------------------------------------
+# SHARED NETWORK
+# ------------------------------------------------------------------
+networks:
+  app-network:
+    driver: bridge

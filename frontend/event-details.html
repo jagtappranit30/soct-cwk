@@ -1,0 +1,149 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Event Details - Notts Event Booking System</title>
+    <!-- Bootstrap CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800&display=swap" rel="stylesheet">
+    <!-- Leaflet CSS -->
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+    <link rel="stylesheet" href="css/styles.css">
+</head>
+<body>
+
+    <!-- Navigation Bar -->
+    <nav class="navbar navbar-expand-lg navbar-dark sticky-top">
+        <div class="container">
+            <a class="navbar-brand fw-bold" href="index.html">🎓 NottsEvents</a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav ms-auto" id="nav-links">
+                    <!-- Links injected by api.js -->
+                </ul>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Main Content -->
+    <main class="container py-5">
+        <div class="row justify-content-center">
+            <div class="col-lg-10">
+
+                <!-- EVENT DETAILS (populated by details.js) -->
+                <div id="event-details-content">
+                    <div class="loading-spinner text-center">
+                        <div class="spinner-border text-primary" role="status">
+                            <span class="visually-hidden">Loading...</span>
+                        </div>
+                        <p class="mt-3 text-muted">Loading event details...</p>
+                    </div>
+                </div>
+
+                <!-- ============================== -->
+                <!-- EXTERNAL API INTEGRATIONS      -->
+                <!-- ============================== -->
+                <div class="mt-5">
+                    <h4 class="fw-bold mb-4 border-start border-4 border-primary ps-3">External API Integrations</h4>
+                    <div class="row g-4">
+
+                        <!-- LEFT COLUMN: Map + Weather -->
+                        <div class="col-md-6">
+                            <!-- Leaflet Map -->
+                            <div class="card border-0 shadow-sm rounded-4 overflow-hidden mb-4">
+                                <div class="card-header bg-white border-0 pt-3 pb-0 px-4">
+                                    <h6 class="text-muted fw-bold small text-uppercase mb-0">📍 Venue Location</h6>
+                                </div>
+                                <div class="card-body p-0">
+                                    <div id="map" style="height: 280px; z-index: 1;"></div>
+                                    <div id="map-error" class="text-center text-muted py-4 d-none">
+                                        Map location unavailable
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Weather Card -->
+                            <div class="card border-0 shadow-sm rounded-4 overflow-hidden">
+                                <div class="card-header bg-white border-0 pt-3 pb-0 px-4">
+                                    <h6 class="text-muted fw-bold small text-uppercase mb-0">🌤️ Weather at Venue</h6>
+                                </div>
+                                <div class="card-body p-4" id="weather-section">
+                                    <div class="text-center py-3">
+                                        <div class="spinner-border spinner-border-sm text-primary me-2" role="status"></div>
+                                        <span class="text-muted">Fetching weather forecast...</span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- RIGHT COLUMN: Nearby Events -->
+                        <div class="col-md-6">
+                            <div class="card border-0 shadow-sm rounded-4 overflow-hidden h-100">
+                                <div class="card-header bg-white border-0 pt-3 pb-0 px-4">
+                                    <h6 class="text-muted fw-bold small text-uppercase mb-0">🎟️ Nearby Public Events</h6>
+                                </div>
+                                <div class="card-body p-4" id="nearby-events-section">
+                                    <div class="text-center py-3">
+                                        <div class="spinner-border spinner-border-sm text-primary me-2" role="status"></div>
+                                        <span class="text-muted">Looking for nearby events...</span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </main>
+
+    <!-- Registration Modal -->
+    <div class="modal fade" id="registerModal" tabindex="-1" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content border-0 shadow">
+                <div class="modal-header border-0 bg-light">
+                    <h5 class="modal-title fw-bold">Secure Your Spot</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body p-4">
+                    <form id="register-form">
+                        <div class="mb-4 text-center">
+                            <p class="text-muted">Enter your student details to register for this event.</p>
+                        </div>
+                        <div class="mb-3">
+                            <label for="studentId" class="form-label fw-600">Student ID / Email</label>
+                            <input type="text" class="form-control form-control-lg" id="studentId" placeholder="e.g. S123456" required>
+                            <div class="form-text mt-2">Registration is currently open for all students.</div>
+                        </div>
+                    </form>
+                </div>
+                <div class="modal-footer border-0 p-4">
+                    <button type="button" class="btn btn-light px-4" data-bs-dismiss="modal">Close</button>
+                    <button type="submit" form="register-form" id="confirm-register-btn" class="btn btn-primary px-4">Register Now</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Footer -->
+    <footer class="footer mt-auto py-5">
+        <div class="container text-center">
+            <p class="mb-1 text-white">© 2026 Notts Event Booking System</p>
+            <p class="small mb-0">SOCT Coursework Demonstration - Built with Vanilla JS</p>
+        </div>
+    </footer>
+
+    <!-- Scripts -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <!-- Leaflet JS -->
+    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+    <script src="js/api.js"></script>
+    <script src="js/externalServices.js"></script>
+    <script src="js/details.js"></script>
+</body>
+</html>

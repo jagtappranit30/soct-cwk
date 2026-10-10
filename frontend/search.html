@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Search Events - Notts Event Booking System</title>
+    <!-- Bootstrap CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="css/styles.css">
+</head>
+<body>
+
+    <!-- Navigation Bar -->
+    <nav class="navbar navbar-expand-lg navbar-dark sticky-top">
+        <div class="container">
+            <a class="navbar-brand fw-bold" href="index.html">🎓 NottsEvents</a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav ms-auto" id="nav-links">
+                    <!-- Links injected by api.js -->
+                </ul>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Main Content -->
+    <main class="container py-5">
+        <div class="row g-5">
+            <!-- Search Sidebar -->
+            <div class="col-lg-4 mb-4">
+                <div class="p-4 bg-white rounded-4 shadow-sm border border-light">
+                    <div class="d-flex align-items-center mb-4">
+                        <div class="fs-4 me-2">🔍</div>
+                        <h4 class="fw-bold mb-0">Search Filters</h4>
+                    </div>
+                    <form id="search-form">
+                        <div class="mb-3">
+                            <label for="search-type" class="form-label fw-600 small">EVENT CATEGORY</label>
+                            <input type="text" class="form-control" id="search-type" placeholder="e.g. Workshop">
+                        </div>
+                        <div class="mb-3">
+                            <label for="search-venue" class="form-label fw-600 small">VENUE / LOCATION</label>
+                            <input type="text" class="form-control" id="search-venue" placeholder="e.g. Newton">
+                        </div>
+                        <div class="mb-4">
+                            <label for="search-date" class="form-label fw-600 small">DATE</label>
+                            <input type="date" class="form-control" id="search-date">
+                        </div>
+                        <div class="d-grid gap-2">
+                            <button type="submit" class="btn btn-primary py-2 shadow-sm">Apply Filters</button>
+                            <button type="reset" id="reset-btn" class="btn btn-light py-2">Clear Filters</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+
+            <!-- Results -->
+            <div class="col-lg-8">
+                <div class="d-flex justify-content-between align-items-center mb-4">
+                    <h2 class="fw-bold mb-0 h3">Results</h2>
+                    <span id="results-count" class="badge rounded-pill bg-light text-dark border px-3 py-2 fw-normal">Discover events...</span>
+                </div>
+                
+                <div id="results-container" class="row g-4">
+                    <!-- Results will be injected here -->
+                    <div class="col-12 text-center py-5">
+                        <div class="display-1 mb-3 opacity-25">🎓</div>
+                        <p class="text-muted lead">Use the filters to find specific events on campus.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <!-- Footer -->
+    <footer class="footer mt-auto py-5">
+        <div class="container text-center">
+            <p class="mb-1 text-white">© 2026 Notts Event Booking System</p>
+            <p class="small mb-0">SOCT Coursework Demonstration - Built with Vanilla JS</p>
+        </div>
+    </footer>
+
+    <!-- Scripts -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="js/api.js"></script>
+    <script src="js/searchEvents.js"></script>
+</body>
+</html>

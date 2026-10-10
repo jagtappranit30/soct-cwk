@@ -1,0 +1,201 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Host an Event - Notts Event Booking System</title>
+    <!-- Bootstrap CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800&display=swap" rel="stylesheet">
+    <!-- Leaflet CSS -->
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+    <link rel="stylesheet" href="css/styles.css">
+    <style>
+        /* Autocomplete dropdown styles */
+        .autocomplete-dropdown {
+            position: absolute;
+            top: 100%;
+            left: 0;
+            right: 0;
+            z-index: 1000;
+            background: white;
+            border: 1px solid #dee2e6;
+            border-top: none;
+            border-radius: 0 0 8px 8px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+            max-height: 250px;
+            overflow-y: auto;
+        }
+        .autocomplete-item {
+            padding: 10px 15px;
+            cursor: pointer;
+            border-bottom: 1px solid #f0f0f0;
+            transition: background 0.15s;
+        }
+        .autocomplete-item:hover {
+            background-color: #f8f0f0;
+        }
+        .autocomplete-item:last-child {
+            border-bottom: none;
+        }
+        .autocomplete-item .name { font-weight: 600; }
+        .autocomplete-item .coords { font-size: 0.75rem; color: #888; }
+        .coord-badge {
+            display: inline-block;
+            padding: 2px 8px;
+            font-size: 0.75rem;
+            background: #e8f5e9;
+            color: #2e7d32;
+            border-radius: 4px;
+        }
+    </style>
+</head>
+<body>
+
+    <!-- Navigation Bar -->
+    <nav class="navbar navbar-expand-lg navbar-dark sticky-top">
+        <div class="container">
+            <a class="navbar-brand fw-bold" href="index.html">🎓 NottsEvents</a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav ms-auto" id="nav-links">
+                    <!-- Links injected by api.js -->
+                </ul>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Main Content -->
+    <main class="container py-5">
+        <div class="row justify-content-center">
+            <div class="col-md-10 col-lg-8">
+                <div class="form-container mb-5">
+                    <div class="text-center mb-5">
+                        <span class="badge bg-light text-primary px-3 py-2 rounded-pill mb-3 fw-bold">EVENT ORGANIZER</span>
+                        <h1 class="display-5 fw-800">Host a New Event</h1>
+                        <p class="text-muted lead">Fill in the details below to publish your event to the student community.</p>
+                    </div>
+                    
+                    <form id="create-event-form" class="needs-validation" novalidate>
+                        <div class="row g-4">
+                            <div class="col-12">
+                                <label for="publisherId" class="form-label fw-600">Organizer / Publisher ID</label>
+                                <input type="text" class="form-control form-control-lg" id="publisherId" placeholder="e.g. NTU-SOC-DEPT" required>
+                                <div class="form-text">This will be shown as the event host.</div>
+                            </div>
+                            
+                            <div class="col-12">
+                                <label for="title" class="form-label fw-600">Event Title</label>
+                                <input type="text" class="form-control form-control-lg" id="title" placeholder="e.g. Annual Tech Symposium 2026" required>
+                            </div>
+                            
+                            <div class="col-md-6">
+                                <label for="type" class="form-label fw-600">Category</label>
+                                <select class="form-select form-select-lg" id="type" required>
+                                    <option value="" disabled selected>Choose category...</option>
+                                    <option value="Workshop">Workshop</option>
+                                    <option value="Social">Social</option>
+                                    <option value="Academic">Academic</option>
+                                    <option value="Sports">Sports</option>
+                                    <option value="Career">Career</option>
+                                    <option value="Other">Other</option>
+                                </select>
+                            </div>
+                            
+                            <div class="col-md-6">
+                                <label for="date" class="form-label fw-600">Event Date</label>
+                                <input type="date" class="form-control form-control-lg" id="date" required>
+                                <div class="invalid-feedback">Please select a future date.</div>
+                            </div>
+
+                            <div class="col-md-6">
+                                <label for="time" class="form-label fw-600">Event Time</label>
+                                <input type="time" class="form-control form-control-lg" id="time" required>
+                                <div class="invalid-feedback">Please select a time.</div>
+                            </div>
+                            
+                            <div class="col-12">
+                                <label for="venue" class="form-label fw-600">Venue / Location</label>
+                                <div class="position-relative">
+                                    <div class="input-group">
+                                        <span class="input-group-text bg-white">📍</span>
+                                        <input type="text" class="form-control form-control-lg" id="venue" 
+                                               placeholder="Start typing... e.g. Nottingham" required autocomplete="off">
+                                    </div>
+                                    <!-- Autocomplete dropdown renders here -->
+                                    <div id="venue-suggestions" class="autocomplete-dropdown d-none"></div>
+                                </div>
+                                <!-- Hidden fields for coordinates -->
+                                <input type="hidden" id="latitude" value="">
+                                <input type="hidden" id="longitude" value="">
+                                <div class="form-text" id="venue-status">
+                                    Type at least 3 characters to search for locations via GeoNames API.
+                                </div>
+                            </div>
+
+                            <!-- Map Preview -->
+                            <div class="col-12" id="map-preview-container" style="display: none;">
+                                <label class="form-label fw-600">📍 Selected Location Preview</label>
+                                <div id="map-preview" style="height: 200px; border-radius: 12px; overflow: hidden; border: 1px solid #dee2e6; z-index: 1;"></div>
+                            </div>
+                            
+                            <div class="col-md-6">
+                                <label for="cost" class="form-label fw-600">Ticket Price (£)</label>
+                                <div class="input-group">
+                                    <span class="input-group-text bg-white">£</span>
+                                    <input type="number" step="0.01" class="form-control form-control-lg" id="cost" value="0.00" min="0" required>
+                                </div>
+                                <div class="form-text">Enter 0.00 for free events.</div>
+                            </div>
+                            
+                            <div class="col-md-6">
+                                <label for="maxParticipants" class="form-label fw-600">Max Capacity</label>
+                                <div class="input-group">
+                                    <span class="input-group-text bg-white">👥</span>
+                                    <input type="number" class="form-control form-control-lg" id="maxParticipants" value="50" min="1" required>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="mt-5 pt-4 border-top">
+                            <div class="row g-3">
+                                <div class="col-md-8">
+                                    <button type="submit" id="submit-btn" class="btn btn-primary btn-lg w-100 py-3 shadow-sm">Publish Event Now</button>
+                                </div>
+                                <div class="col-md-4">
+                                    <a href="index.html" class="btn btn-light btn-lg w-100 py-3">Discard</a>
+                                </div>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+                
+                <div id="status-message" class="mt-4 text-center d-none">
+                    <div class="alert alert-success border-0 shadow-sm p-4 rounded-4" role="alert">
+                        <div class="fs-2 mb-2">✅</div>
+                        <h4 class="alert-heading fw-bold">Success!</h4>
+                        <p class="mb-0">Your event has been published. Redirecting to home page...</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <!-- Footer -->
+    <footer class="footer mt-auto py-5">
+        <div class="container text-center">
+            <p class="mb-1 text-white">© 2026 Notts Event Booking System</p>
+            <p class="small mb-0">SOCT Coursework Demonstration - Built with Vanilla JS</p>
+        </div>
+    </footer>
+
+    <!-- Scripts -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+    <script src="js/api.js"></script>
+    <script src="js/createEvent.js"></script>
+</body>
+</html>

@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>My Bookings - Notts Event Booking System</title>
+    <!-- Bootstrap CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="css/styles.css">
+</head>
+<body class="bg-light">
+
+    <!-- Navigation Bar -->
+    <nav class="navbar navbar-expand-lg navbar-dark sticky-top">
+        <div class="container">
+            <a class="navbar-brand fw-bold" href="index.html">🎓 NottsEvents</a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav ms-auto" id="nav-links">
+                    <li class="nav-item"><a class="nav-link" href="index.html">Home</a></li>
+                    <li class="nav-item"><a class="nav-link" href="search.html">Search</a></li>
+                    <li class="nav-item"><a class="nav-link active" href="my-bookings.html">My Bookings</a></li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+
+    <!-- My Bookings Section -->
+    <main class="container py-5">
+        <header class="mb-5">
+            <h1 class="fw-bold display-5">My Booked Events</h1>
+            <p class="text-muted" id="user-greeting">Welcome back! Here are the events you've secured a spot for.</p>
+        </header>
+
+        <div class="card shadow-sm border-0 rounded-4 overflow-hidden">
+            <div class="table-responsive">
+                <table class="table table-hover align-middle mb-0" id="bookings-table">
+                    <thead class="table-dark">
+                        <tr>
+                            <th class="ps-4">Event Title</th>
+                            <th>Category</th>
+                            <th>Date</th>
+                            <th>Venue</th>
+                            <th>Price</th>
+                            <th class="text-center">Action</th>
+                        </tr>
+                    </thead>
+                    <tbody id="bookings-list">
+                        <!-- Table rows will be injected here -->
+                        <tr>
+                            <td colspan="6" class="text-center py-5">
+                                <div class="spinner-border text-primary" role="status"></div>
+                                <p class="mt-2 mb-0 small text-muted">Loading your bookings...</p>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+        <div id="empty-state" class="text-center py-5 d-none">
+            <div class="display-1 mb-3 opacity-25">🎟️</div>
+            <h3 class="fw-bold">No Bookings Yet</h3>
+            <p class="text-secondary">You haven't registered for any events. Why not explore some?</p>
+            <a href="index.html" class="btn btn-primary px-4 py-2 mt-3">Explore Events</a>
+        </div>
+    </main>
+
+    <!-- Footer -->
+    <footer class="footer mt-auto py-5">
+        <div class="container text-center">
+            <p class="mb-1 text-white">© 2026 Notts Event Booking System</p>
+            <p class="small mb-0">SOCT Coursework Demonstration - Built with Vanilla JS</p>
+        </div>
+    </footer>
+
+    <!-- Scripts -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="js/api.js"></script>
+    <script src="js/myBookings.js"></script>
+</body>
+</html>
